@@ -121,7 +121,8 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        clawdata.tfinal = days2seconds(4)
+        # clawdata.tfinal = days2seconds(4)
+        clawdata.tfinal = days2seconds(3)
         recurrence = 4
         clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) *
                                         recurrence / (60**2 * 24))
@@ -262,7 +263,7 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 7
+    amrdata.amr_levels_max = 6
 
     # List of refinement ratios at each level (length at least mxnest-1)
     amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 8] # 50 m
@@ -311,71 +312,85 @@ def setrun(claw_pkg='geoclaw'):
 
     # More AMR parameters can be set -- see the defaults in pyclaw/data.py
 
-    # == setregions.data values ==
-    regions = rundata.regiondata.regions
-    # to specify regions of refinement append lines of the form
-    #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-
+    # == Gauges == *
+    gauges = rundata.gaugedata.gauges
+    
     # Gauges from PLSMSL Stations https://www.psmsl.org/products/gloss/glossmap.html
     # 203: Port of Spain Trinidad and Tobago, 1, -61.517, 10.650, 
-    rundata.gaugedata.gauges.append([1, -61.517, 10.650,
+    gauges.append([1, -61.517, 10.650,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Gauges from Sea Level Station Monitoring Facility
     # Prickley Bay, Grenada Station, 2, -61.764828, 12.005392
-    rundata.gaugedata.gauges.append([2, -61.764828, 12.005392,
+    gauges.append([2, -61.764828, 12.005392,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Calliaqua Coast Guard Base, Saint Vincent & Grenadines, 3, -61.1955, 13.129912
-    rundata.gaugedata.gauges.append([3, -61.1955, 13.129912,
+    gauges.append([3, -61.1955, 13.129912,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Ganter's Bay, Saint Lucia, 4,-60.997351, 14.016428
-    rundata.gaugedata.gauges.append([4, -60.997351, 14.016428,
+    gauges.append([4, -60.997351, 14.016428,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Fort-de-France, Martinique2, 5, 
-    rundata.gaugedata.gauges.append([5, -61.063333, 14.601667,
+    gauges.append([5, -61.063333, 14.601667,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Roseau Dominica, 6, 61.3891833, 15.31385
-    rundata.gaugedata.gauges.append([6, -61.3891833, 15.31385,
+    gauges.append([6, -61.3891833, 15.31385,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Pointe «¢ Pitre, Guadeloupe, 7, -61.531452, 16.224398
-    rundata.gaugedata.gauges.append([7, -61.531452, 16.224398,
+    gauges.append([7, -61.531452, 16.224398,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Parham (Camp Blizard), Antigua, 8, -61.7833, 17.15
-    rundata.gaugedata.gauges.append([8, -61.7833, 17.15,
+    gauges.append([8, -61.7833, 17.15,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Blowing Point, Anguilla, 9, -63.0926167, 18.1710861
-    rundata.gaugedata.gauges.append([9, -63.0926167, 18.1710861,
+    gauges.append([9, -63.0926167, 18.1710861,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Saint Croix, VI, 10, -64.69833, 17.74666
-    rundata.gaugedata.gauges.append([10, -64.69833, 17.74666,
+    gauges.append([10, -64.69833, 17.74666,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # San Juan, PR, 11, -66.1167, 18.4617
-    rundata.gaugedata.gauges.append([11, -66.1167, 18.4617,
+    gauges.append([11, -66.1167, 18.4617,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Barahona, Dominican Republic, 12, -71.092154, 18.208137
-    rundata.gaugedata.gauges.append([12, -71.092154, 18.208137,
+    gauges.append([12, -71.092154, 18.208137,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # George Town, Cayman Islands, 13, -81.383484, 19.295065
-    rundata.gaugedata.gauges.append([13, -81.383484, 19.295065,
+    gauges.append([13, -81.383484, 19.295065,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Settlement pt, Bahamas, 14, -78.98333, 26.6833324
-    rundata.gaugedata.gauges.append([14, -78.98333, 26.6833324,
+    gauges.append([14, -78.98333, 26.6833324,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Force the gauges to also record the wind and pressure fields
-    rundata.gaugedata.aux_out_fields = [4, 5, 6]
+    aux_out_fields = [4, 5, 6]
+
+    # == setregions.data values ==
+    regions = rundata.regiondata.regions
+    # to specify regions of refinement append lines of the form
+    #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
+    # Add gauge support
+    dx = 1/3600
+    for g in gauges:
+        t1 = g[3]
+        t2 = g[4]
+        x = g[1]
+        y = g[2]
+        regions.append([amrdata.amr_levels_max, amrdata.amr_levels_max,
+                        t1, t2, x-dx, x+dx, y-dx, y+dx])
+            
+
 
     # == fgmax_grids.data values ==
 

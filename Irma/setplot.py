@@ -217,7 +217,8 @@ def setplot(plotdata=None):
     fgmax_plotdir = '_plots'
     os.system('mkdir -p %s' % fgmax_plotdir)
     # Read fgmax data:
-    for fgno in range(1,9): # can this be automated?
+    fgno = 1
+    while(True):
         fg = fgmax_tools.FGmaxGrid()
         try:
             fg.read_fgmax_grids_data(fgno)
@@ -240,8 +241,9 @@ def setplot(plotdata=None):
             img_name = f'fgmax{str(fgno).zfill(4)}_h_onshore.png'
             plt.savefig(fname=f'{fgmax_plotdir}/{img_name}')
             otherfigure = plotdata.new_otherfigure(name=f'max depth on fgmax grid {fgno}', fname=img_name)
+            fgno = fgno + 1
         except:
-            pass
+            break
 
     # -----------------------------------------
     # Parameters used only when creating html and/or latex hardcopy
