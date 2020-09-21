@@ -4,15 +4,15 @@
 ###    and then "make .data"                        ####
 ########################################################
 
-2                    =: num_fgmax_val       
-8                    =: num_fgmax_grids     
+1                    =: num_fgmax_val       
+5                    =: num_fgmax_grids     
 
 
 1                           # fgno
 -2.5920000000e+05            # tstart_max
-1.7280000000e+05            # tend_max
+2.5920000000e+05            # tend_max
 6.0000000000e+01            # dt_check
-7                           # min_level_check
+4                           # min_level_check
 1.0000000000e-02            # arrival_tol
 0                           # interp_method
 2                           # point_style
@@ -22,9 +22,9 @@
 
 2                           # fgno
 -2.5920000000e+05            # tstart_max
-1.7280000000e+05            # tend_max
+2.5920000000e+05            # tend_max
 6.0000000000e+01            # dt_check
-7                           # min_level_check
+4                           # min_level_check
 1.0000000000e-02            # arrival_tol
 0                           # interp_method
 2                           # point_style
@@ -34,9 +34,9 @@
 
 3                           # fgno
 -2.5920000000e+05            # tstart_max
-1.7280000000e+05            # tend_max
+2.5920000000e+05            # tend_max
 6.0000000000e+01            # dt_check
-7                           # min_level_check
+4                           # min_level_check
 1.0000000000e-02            # arrival_tol
 0                           # interp_method
 2                           # point_style
@@ -46,9 +46,9 @@
 
 4                           # fgno
 -2.5920000000e+05            # tstart_max
-1.7280000000e+05            # tend_max
+2.5920000000e+05            # tend_max
 6.0000000000e+01            # dt_check
-7                           # min_level_check
+4                           # min_level_check
 1.0000000000e-02            # arrival_tol
 0                           # interp_method
 2                           # point_style
@@ -58,48 +58,12 @@
 
 5                           # fgno
 -2.5920000000e+05            # tstart_max
-1.7280000000e+05            # tend_max
+2.5920000000e+05            # tend_max
 6.0000000000e+01            # dt_check
-7                           # min_level_check
+4                           # min_level_check
 1.0000000000e-02            # arrival_tol
 0                           # interp_method
 2                           # point_style
 3307  2659                     # nx,ny
 -7.9354200000e+01       2.0181900000e+01            # x1, y1
 -7.0170866667e+01       2.7565233333e+01            # x2, y2
-
-6                           # fgno
--2.5920000000e+05            # tstart_max
-1.7280000000e+05            # tend_max
-6.0000000000e+01            # dt_check
-7                           # min_level_check
-1.0000000000e-02            # arrival_tol
-0                           # interp_method
-2                           # point_style
-2216  883                     # nx,ny
--7.3981900000e+01       2.0860300000e+01            # x1, y1
--7.0905511111e+01       2.2085300000e+01            # x2, y2
-
-7                           # fgno
--2.5920000000e+05            # tstart_max
-1.7280000000e+05            # tend_max
-6.0000000000e+01            # dt_check
-7                           # min_level_check
-1.0000000000e-02            # arrival_tol
-0                           # interp_method
-2                           # point_style
-1904  2053                     # nx,ny
--6.1659400000e+01       1.5123400000e+01            # x1, y1
--6.1130788889e+01       1.5693400000e+01            # x2, y2
-
-8                           # fgno
--2.5920000000e+05            # tstart_max
-1.7280000000e+05            # tend_max
-6.0000000000e+01            # dt_check
-7                           # min_level_check
-1.0000000000e-02            # arrival_tol
-0                           # interp_method
-2                           # point_style
-2493  3235                     # nx,ny
--6.2174400000e+01       1.6909300000e+01            # x1, y1
--6.1482177778e+01       1.7807633333e+01            # x2, y2

@@ -139,7 +139,7 @@ def setrun(claw_pkg='geoclaw'):
         clawdata.total_steps = 1
         clawdata.output_t0 = True
 
-    clawdata.output_format = 'ascii'      # 'ascii' or 'binary'
+    clawdata.output_format = 'binary'      # 'ascii' or 'binary'
     clawdata.output_q_components = 'all'   # could be list such as [True,True]
     clawdata.output_aux_components = 'all'
     clawdata.output_aux_onlyonce = False    # output aux arrays only at t0
@@ -263,14 +263,18 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 6
+    amrdata.amr_levels_max = 7
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 8] # 50 m
-    amrdata.refinement_ratios_y = [2, 2, 2, 2, 4, 8]
-    amrdata.refinement_ratios_t = [2, 2, 2, 2, 4, 8]
+    amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 2] # 200 m
+    amrdata.refinement_ratios_y = [2, 2, 2, 2, 4, 2]
+    amrdata.refinement_ratios_t = [2, 2, 2, 2, 4, 2]
+    # amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 8] # 50 m
+    # amrdata.refinement_ratios_y = [2, 2, 2, 2, 4, 8]
+    # amrdata.refinement_ratios_t = [2, 2, 2, 2, 4, 8]
 
     # 1 / (4*2*2*2*2*4*8) degrees
+    # Note: 1 degree = 10 km
 
     # Specify type of each aux variable in amrdata.auxtype.
     # This must be a list of length maux, each element of which is one of:
@@ -398,13 +402,14 @@ def setrun(claw_pkg='geoclaw'):
     # set num_fgmax_val = 1 to save only max depth,
     #                     2 to also save max speed,
     #                     5 to also save max hs,hss,hmin
-    rundata.fgmax_data.num_fgmax_val = 2  # Save depth and speed
+    rundata.fgmax_data.num_fgmax_val = 1  # Save depth only
+    # rundata.fgmax_data.num_fgmax_val = 2  # Save depth and speed
 
     fgmax_grids = rundata.fgmax_data.fgmax_grids  # empty list to start
 
     # Now append to this list objects of class fgmax_tools.FGmaxGrid
     # specifying any fgmax grids.
-    # Note: 1 arcsec = 30m
+    # Note: 1 arcsec = 30 m
     # Make sure x1 < x2, y1 < y2
     fgmax_regions = [
             {'Name':'Trinidad to Dominica; Winward Islands',
@@ -437,27 +442,27 @@ def setrun(claw_pkg='geoclaw'):
                 'y1': 20.1819,
                 'y2': 27.5647,
                 },
-            {'Name':'Turks and Caicos',
-                'x1': -73.9819,
-                'x2': -70.9058,
-                'y1': 20.8603,
-                'y2': 22.0853,
-                'dx': 5/3600
-                },
-            {'Name':'Dominica',
-                'x1': -61.6594,
-                'x2': -61.1307,
-                'y1': 15.1234,
-                'y2': 15.6933,
-                'dx': 1/3600
-                },
-            {'Name':'Antigua and Barbuda',
-                'x1': -62.1744,
-                'x2': -61.4822,
-                'y1': 16.9093,
-                'y2': 17.8075,
-                'dx': 1/3600
-                },
+            # {'Name':'Turks and Caicos',
+                # 'x1': -73.9819,
+                # 'x2': -70.9058,
+                # 'y1': 20.8603,
+                # 'y2': 22.0853,
+                # 'dx': 5/3600
+                # },
+            # {'Name':'Dominica',
+                # 'x1': -61.6594,
+                # 'x2': -61.1307,
+                # 'y1': 15.1234,
+                # 'y2': 15.6933,
+                # 'dx': 1/3600
+                # },
+            # {'Name':'Antigua and Barbuda',
+                # 'x1': -62.1744,
+                # 'x2': -61.4822,
+                # 'y1': 16.9093,
+                # 'y2': 17.8075,
+                # 'dx': 1/3600
+                # },
             ]
     for fr in fgmax_regions:
     # Points on a uniform 2d grid:
@@ -471,7 +476,8 @@ def setrun(claw_pkg='geoclaw'):
         if 'dx' in fr.keys():
             fg.dx = fr['dx']
         else:
-            fg.dx = 10/ 3600.  
+            fg.dx = 5 / 3600.  
+            # fg.dx = 10 / 3600.  
         fg.min_level_check = amrdata.amr_levels_max # which levels to monitor max on
         fg.tstart_max = clawdata.t0  # just before wave arrives
         fg.tend_max = clawdata.tfinal    # when to stop monitoring max values
@@ -539,10 +545,10 @@ def setgeo(rundata):
     maxlat = rundata.clawdata.upper[1]
     # ERDDAP Data Access Form call
     # ETOPO - 1 arcminute resolution
-    ETOPO_filename = f'etopo180.esriAscii?altitude[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
-    ETOPO_url = 'http://coastwatch.pfeg.noaa.gov/erddap/griddap/' + ETOPO_filename
-    clawutil.data.get_remote_file(ETOPO_url)
-    topo_path = os.path.join(scratch_dir, ETOPO_filename)
+    topo_filename = f'etopo180.esriAscii?altitude[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
+    topo_url = 'http://coastwatch.pfeg.noaa.gov/erddap/griddap/' + topo_filename
+    clawutil.data.get_remote_file(topo_url)
+    topo_path = os.path.join(scratch_dir, topo_filename)
     topo_data.topofiles.append([3, 1, 5, rundata.clawdata.t0,
                                 rundata.clawdata.tfinal,
                                 topo_path])
@@ -560,10 +566,12 @@ def setgeo(rundata):
     maxlon = -68
     # ERDDAP Data Access Form call
     # SRTM15 - 15 arcsecond resolution
-    SRTM15_filename = f'srtm15plus.esriAscii?z[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
-    SRTM15_url = 'http://coastwatch.pfeg.noaa.gov/erddap/griddap/' + SRTM15_filename 
-    clawutil.data.get_remote_file(SRTM15_url)
-    topo_path = os.path.join(scratch_dir, SRTM15_filename)
+    # topo_filename = f'srtm15plus.esriAscii?z[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
+    # GEBCO_2020 Grid - 15 arcsecond resolution
+    topo_filename = f'GEBCO_2020.esriAscii?elevation[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
+    topo_url = 'http://coastwatch.pfeg.noaa.gov/erddap/griddap/' + topo_filename 
+    clawutil.data.get_remote_file(topo_url)
+    topo_path = os.path.join(scratch_dir, topo_filename)
     topo_data.topofiles.append([3, 1, rundata.amrdata.amr_levels_max,
                                 rundata.clawdata.t0, rundata.clawdata.tfinal,
                                 topo_path])
@@ -573,14 +581,16 @@ def setgeo(rundata):
     minlon = -69
     maxlon = -58
     # ERDDAP Data Access Form call
-    SRTM15_filename = f'srtm15plus.esriAscii?z[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
-    SRTM15_url = 'http://coastwatch.pfeg.noaa.gov/erddap/griddap/' + SRTM15_filename 
-    clawutil.data.get_remote_file(SRTM15_url)
-    topo_path = os.path.join(scratch_dir, SRTM15_filename)
+    # SRTM15 - 15 arcsecond resolution
+    # topo_filename = f'srtm15plus.esriAscii?z[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
+    # GEBCO_2020 Grid - 15 arcsecond resolution
+    topo_filename = f'GEBCO_2020.esriAscii?elevation[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
+    topo_url = 'http://coastwatch.pfeg.noaa.gov/erddap/griddap/' + topo_filename 
+    clawutil.data.get_remote_file(topo_url)
+    topo_path = os.path.join(scratch_dir, topo_filename)
     topo_data.topofiles.append([3, 1, rundata.amrdata.amr_levels_max, 
                                 rundata.clawdata.t0, rundata.clawdata.tfinal,
                                 topo_path])
-
     # Virgin Islands High resolution 
     # # High resolution (1 arcsec / 30m) Virgin Islands topo-bathy (roughly 2^-11 deg)
     # VI_highres_filename = 'usvi_1_mhw_2014.nc'

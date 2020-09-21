@@ -32,7 +32,7 @@ def setplot(plotdata=None):
 
     # clear any old figures,axes,items data
     plotdata.clearfigures()
-    plotdata.format = 'ascii'
+    plotdata.format = 'binary'
 
     # Load data from output
     clawdata = clawutil.ClawInputData(2)
@@ -53,7 +53,11 @@ def setplot(plotdata=None):
                                              kwargs={"markersize": 4})
 
     # Color limits
-    surface_limits = [-5.0, 5.0]
+    surface_range = 5.0
+    eta = physics.sea_level
+    if not isinstance(eta,list):
+        eta = [eta]
+    surface_limits = [eta[0]-surface_range,eta[0]+surface_range]
     speed_limits = [0.0, 3.0]
     wind_limits = [0, 64]
     pressure_limits = [935, 1013]
@@ -255,7 +259,7 @@ def setplot(plotdata=None):
     plotdata.print_gaugenos = 'all'          # list of gauges to print
     plotdata.print_fignos = 'all'            # list of figures to print
     plotdata.html = True                     # create html files of plots?
-    plotdata.latex = True                    # create latex file of plots?
+    plotdata.latex = False                    # create latex file of plots?
     plotdata.latex_figsperline = 2           # layout of plots
     plotdata.latex_framesperline = 1         # layout of plots
     plotdata.latex_makepdf = False           # also run pdflatex?
