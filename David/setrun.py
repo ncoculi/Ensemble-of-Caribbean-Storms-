@@ -99,7 +99,7 @@ def setrun(claw_pkg='geoclaw'):
     # -------------
     # Initial time:
     # -------------
-    clawdata.t0 = -days2seconds(3)
+    clawdata.t0 = -days2seconds(2)
 
     # Restart from checkpoint file of a previous run?
     # If restarting, t0 above should be from original run, and the
@@ -121,7 +121,7 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        clawdata.tfinal = days2seconds(3)
+        clawdata.tfinal = days2seconds(5)
         recurrence = 4
         clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) *
                                         recurrence / (60**2 * 24))
@@ -262,7 +262,7 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 7
+    amrdata.amr_levels_max = 5 # up to 7
 
     # List of refinement ratios at each level (length at least mxnest-1)
     amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 2] # 200 m
@@ -631,12 +631,12 @@ def setgeo(rundata):
     # Storm parameters - Parameterized storm (Holland 1980)
     data.storm_specification_type = 'holland80'  # (type 1)
     data.storm_file = os.path.expandvars(os.path.join(os.getcwd(),
-                                         'irma.storm'))
+                                         'david.storm'))
 
     # Convert ATCF data to GeoClaw format
     clawutil.data.get_remote_file(
-                   "http://ftp.nhc.noaa.gov/atcf/archive/2017/bal112017.dat.gz")
-    atcf_path = os.path.join(scratch_dir, "bal112017.dat")
+                   "http://ftp.nhc.noaa.gov/atcf/archive/1979/bal091979.dat.gz")
+    atcf_path = os.path.join(scratch_dir, "bal091979.dat")
     # Note that the get_remote_file function does not support gzip files which
     # are not also tar files.  The following code handles this
     with gzip.open(".".join((atcf_path, 'gz')), 'rb') as atcf_file,    \
@@ -648,7 +648,9 @@ def setgeo(rundata):
     # Calculate landfall time - Need to specify as the file above does not
     #ike.time_offset = datetime.datetime(YYYY, MM, DD, HH in UTC)
     # "Landfall" for Irma at Virgin Islands was Sept 6, at ~ 18:00 UTC (2pm EST)
-    storm.time_offset = datetime.datetime(2017, 9, 6, 18)
+    # storm.time_offset = datetime.datetime(1979, 9, 6, 18)
+    # Landfall for David at Dominica was Aug 29
+    storm.time_offset = datetime.datetime(1979, 8, 29, 12)
 
     storm.write(data.storm_file, file_format='geoclaw')
 
