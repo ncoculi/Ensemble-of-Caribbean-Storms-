@@ -9,10 +9,10 @@
 3                    =: ntopofiles          
 
 '/home/marc/clawpack_src/clawpack-v5.7.0/geoclaw/scratch/etopo180.esriAscii?altitude[(9.0):1:(31.0)][(-88.0):1:(-45.0)]' 
-   3   1   5    -2.5920000000e+05     2.5920000000e+05 
+   3   1   5    -1.7280000000e+05     3.4560000000e+05 
 
 '/home/marc/clawpack_src/clawpack-v5.7.0/geoclaw/scratch/GEBCO_2020.esriAscii?elevation[(16):1:(28)][(-86):1:(-68)]' 
-   3   1   4    -2.5920000000e+05     2.5920000000e+05 
+   3   1   4    -1.7280000000e+05     3.4560000000e+05 
 
 '/home/marc/clawpack_src/clawpack-v5.7.0/geoclaw/scratch/GEBCO_2020.esriAscii?elevation[(9):1:(21)][(-69):1:(-58)]' 
-   3   1   4    -2.5920000000e+05     2.5920000000e+05 
+   3   1   4    -1.7280000000e+05     3.4560000000e+05 

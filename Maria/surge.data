@@ -16,4 +16,4 @@ T                    =: display_landfall_time # (Display time relative to landfa
 60000.0 40000.0 20000.0 =: R_refine             # (Refinement ratios) 
 
 1                    =: storm_specification_type # (Storm specification) 
-'/home/marc/clawpack_src/clawpack-v5.7.0/geoclaw/examples/storm-surge/irma-caribbean/irma.storm' =: storm_file           # (Path to storm data) 
+'/home/marc/clawpack_src/clawpack-v5.7.0/geoclaw/examples/storm-surge/Ensemble-of-Caribbean-Storms-/Maria/maria.storm' =: storm_file           # (Path to storm data) 

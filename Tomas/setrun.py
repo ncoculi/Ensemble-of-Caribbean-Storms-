@@ -68,11 +68,11 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.num_dim = num_dim
 
     # Lower and upper edge of computational domain:
-    clawdata.lower[0] = -100.0      # west longitude
-    clawdata.upper[0] = -28.0      # east longitude
+    clawdata.lower[0] = -88.0      # west longitude
+    clawdata.upper[0] = -45.0      # east longitude
 
-    clawdata.lower[1] = 9      # south latitude
-    clawdata.upper[1] = 2.0      # north latitude
+    clawdata.lower[1] = 9.0       # south latitude
+    clawdata.upper[1] = 31.0      # north latitude
 
     # Number of grid cells:
     degree_factor = 4  # (0.25¬∫,0.25¬∫) ~ (25237.5 m, 27693.2 m) resolution
@@ -99,7 +99,7 @@ def setrun(claw_pkg='geoclaw'):
     # -------------
     # Initial time:
     # -------------
-    clawdata.t0 = -days2seconds(3)
+    clawdata.t0 = -days2seconds(1)
 
     # Restart from checkpoint file of a previous run?
     # If restarting, t0 above should be from original run, and the
@@ -121,7 +121,7 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        clawdata.tfinal = days2seconds(2)
+        clawdata.tfinal = days2seconds(8)
         recurrence = 4
         clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) *
                                         recurrence / (60**2 * 24))
@@ -138,7 +138,7 @@ def setrun(claw_pkg='geoclaw'):
         clawdata.total_steps = 1
         clawdata.output_t0 = True
 
-    clawdata.output_format = 'ascii'      # 'ascii' or 'binary'
+    clawdata.output_format = 'binary'      # 'ascii' or 'binary'
     clawdata.output_q_components = 'all'   # could be list such as [True,True]
     clawdata.output_aux_components = 'all'
     clawdata.output_aux_onlyonce = False    # output aux arrays only at t0
@@ -173,7 +173,7 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.cfl_max = 1.0
 
     # Maximum number of time steps to allow between output times:
-    clawdata.steps_max = 50000
+    clawdata.steps_max = 500000
 
     # ------------------
     # Method to be used:
@@ -262,14 +262,18 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 5
+    amrdata.amr_levels_max = 7 # up to 7
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 8] # 50 m
-    amrdata.refinement_ratios_y = [2, 2, 2, 2, 4, 8]
-    amrdata.refinement_ratios_t = [2, 2, 2, 2, 4, 8]
+    amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 2] # 200 m
+    amrdata.refinement_ratios_y = [2, 2, 2, 2, 4, 2]
+    amrdata.refinement_ratios_t = [2, 2, 2, 2, 4, 2]
+    # amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 8] # 50 m
+    # amrdata.refinement_ratios_y = [2, 2, 2, 2, 4, 8]
+    # amrdata.refinement_ratios_t = [2, 2, 2, 2, 4, 8]
 
     # 1 / (4*2*2*2*2*4*8) degrees
+    # Note: 1 degree = 10 km
 
     # Specify type of each aux variable in amrdata.auxtype.
     # This must be a list of length maux, each element of which is one of:
@@ -311,70 +315,85 @@ def setrun(claw_pkg='geoclaw'):
 
     # More AMR parameters can be set -- see the defaults in pyclaw/data.py
 
+    # == Gauges == *
+    gauges = rundata.gaugedata.gauges
+    
+    # Gauges from PLSMSL Stations https://www.psmsl.org/products/gloss/glossmap.html
+    # 203: Port of Spain Trinidad and Tobago, 1, -61.517, 10.650, 
+    gauges.append([1, -61.517, 10.650,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # Gauges from Sea Level Station Monitoring Facility
+    # Prickley Bay, Grenada Station, 2, -61.764828, 12.005392
+    gauges.append([2, -61.764828, 12.005392,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # Calliaqua Coast Guard Base, Saint Vincent & Grenadines, 3, -61.1955, 13.129912
+    gauges.append([3, -61.1955, 13.129912,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # Ganter's Bay, Saint Lucia, 4,-60.997351, 14.016428
+    gauges.append([4, -60.997351, 14.016428,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # Fort-de-France, Martinique2, 5, 
+    gauges.append([5, -61.063333, 14.601667,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # Roseau Dominica, 6, 61.3891833, 15.31385
+    gauges.append([6, -61.3891833, 15.31385,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # Pointe è´¢ Pitre, Guadeloupe, 7, -61.531452, 16.224398
+    gauges.append([7, -61.531452, 16.224398,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # Parham (Camp Blizard), Antigua, 8, -61.7833, 17.15
+    gauges.append([8, -61.7833, 17.15,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # Blowing Point, Anguilla, 9, -63.0926167, 18.1710861
+    gauges.append([9, -63.0926167, 18.1710861,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # Saint Croix, VI, 10, -64.69833, 17.74666
+    gauges.append([10, -64.69833, 17.74666,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # San Juan, PR, 11, -66.1167, 18.4617
+    gauges.append([11, -66.1167, 18.4617,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # Barahona, Dominican Republic, 12, -71.092154, 18.208137
+    gauges.append([12, -71.092154, 18.208137,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # George Town, Cayman Islands, 13, -81.383484, 19.295065
+    gauges.append([13, -81.383484, 19.295065,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # Settlement pt, Bahamas, 14, -78.98333, 26.6833324
+    gauges.append([14, -78.98333, 26.6833324,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    # Force the gauges to also record the wind and pressure fields
+    aux_out_fields = [4, 5, 6]
+
     # == setregions.data values ==
     regions = rundata.regiondata.regions
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-    # Gauges from PLSMSL Stations https://www.psmsl.org/products/gloss/glossmap.html
-    # 203: Port of Spain Trinidad and Tobago, 1, -61.517, 10.650, 
-    # Gauges from Sea Level Station Monitoring Facility
-    # Prickley Bay, Grenada Station, 2, -61.764828, 12.005392
-    # Calliaqua Coast Guard Base, Saint Vincent & Grenadines, 3, -61.1955, 13.129912
-    # Ganter's Bay, Saint Lucia, 4,-60.997351, 14.016428
-    # Fort-de-France, Martinique2, 5, 
-    # Roseau Dominica, 6, 61.3891833, 15.31385
-    # Pointe Pitre, Guadeloupe, 7, -61.531452, 16.224398
-    # Parham (Camp Blizard), Antigua, 8, -61.7833, 17.15
-    # Blowing Point, Anguilla, 9, -63.0926167, 18.1710861
-    # Saint Croix, VI, 10, -64.69833, 17.74666
-    # San Juan, PR, 11, -66.1167, 18.4617
-    # Barahona, Dominican Republic, 12, -71.092154, 18.208137
-    # George Town, Cayman Islands, 13, -81.383484, 19.295065
-    # Settlement pt, Bahamas, 14, -78.98333, 26.6833324
-    rundata.gaugedata.gauges.append([1, -61.517, 10.650,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([2, -61.764828, 12.005392,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([3, -61.1955, 13.129912,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([4, -60.997351, 14.016428,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([5, -61.063333, 14.601667,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([6, -61.3891833, 15.31385,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([7, -61.531452, 16.224398,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([8, -61.7833, 17.15,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([9, -63.0926167, 18.1710861,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([10, -64.69833, 17.74666,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([11, -66.1167, 18.4617,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([12, -71.092154, 18.208137,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([13, -81.383484, 19.295065,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([14, -78.98333, 26.6833324,
-                                     rundata.clawdata.t0,
-                                     rundata.clawdata.tfinal])
-    # Force the gauges to also record the wind and pressure fields
-    rundata.gaugedata.aux_out_fields = [4, 5, 6]
+    # Add gauge support
+    dx = 1/3600
+    for g in gauges:
+        t1 = g[3]
+        t2 = g[4]
+        x = g[1]
+        y = g[2]
+        regions.append([amrdata.amr_levels_max, amrdata.amr_levels_max,
+                        t1, t2, x-dx, x+dx, y-dx, y+dx])
+            
+
 
     # == fgmax_grids.data values ==
 
@@ -382,33 +401,88 @@ def setrun(claw_pkg='geoclaw'):
     # set num_fgmax_val = 1 to save only max depth,
     #                     2 to also save max speed,
     #                     5 to also save max hs,hss,hmin
-    rundata.fgmax_data.num_fgmax_val = 2  # Save depth and speed
+    rundata.fgmax_data.num_fgmax_val = 1  # Save depth only
+    # rundata.fgmax_data.num_fgmax_val = 2  # Save depth and speed
 
     fgmax_grids = rundata.fgmax_data.fgmax_grids  # empty list to start
 
     # Now append to this list objects of class fgmax_tools.FGmaxGrid
     # specifying any fgmax grids.
-    
+    # Note: 1 arcsec = 30 m
+    # Make sure x1 < x2, y1 < y2
+    fgmax_regions = [
+            {'Name':'Trinidad to Dominica; Winward Islands',
+                'x1': -62.6056,
+                'x2': -58.7494,
+                'y1': 9.9042,
+                'y2': 15.694,
+                },
+            {'Name':'Guadeloupe to U.S. Virgin Islands; Leeward Islands',
+                'x1': -65.6021,
+                'x2': -60.6143,
+                'y1': 15.7242,
+                'y2': 18.8608,
+                },
+            {'Name':'Virgin Islands, Puerto Rico and Hispaniola',
+                'x1': -75.1355,
+                'x2': -63.8306,
+                'y1': 16.7706,
+                'y2': 20.9674,
+                },
+            {'Name':'Cuba, Jamaica, and the Cayman Islands',
+                'x1': -85.3088,
+                'x2': -73.9709,
+                'y1': 17.6605,
+                'y2': 23.3514,
+                },
+            {'Name':'The Bahamas and The Turks and Caicos Islands',
+                'x1': -79.3542,
+                'x2': -70.1697,
+                'y1': 20.1819,
+                'y2': 27.5647,
+                },
+            # {'Name':'Turks and Caicos',
+                # 'x1': -73.9819,
+                # 'x2': -70.9058,
+                # 'y1': 20.8603,
+                # 'y2': 22.0853,
+                # 'dx': 5/3600
+                # },
+            # {'Name':'Dominica',
+                # 'x1': -61.6594,
+                # 'x2': -61.1307,
+                # 'y1': 15.1234,
+                # 'y2': 15.6933,
+                # 'dx': 1/3600
+                # },
+            # {'Name':'Antigua and Barbuda',
+                # 'x1': -62.1744,
+                # 'x2': -61.4822,
+                # 'y1': 16.9093,
+                # 'y2': 17.8075,
+                # 'dx': 1/3600
+                # },
+            ]
+    for fr in fgmax_regions:
     # Points on a uniform 2d grid:
-    fg = fgmax_tools.FGmaxGrid()
-    fg.point_style = 2  # uniform rectangular x-y grid  
-    fg.x1 = -65.5
-    fg.x2 = -64.0
-    fg.y1 = 18.25
-    fg.y2 = 18.75
-    fg.dx = 10/ 3600.  # desired resolution of fgmax grid
-    # fg.x1 = -65.1
-    # fg.x2 = -64.3
-    # fg.y1 = 18.2
-    # fg.y2 = 18.5
-    # fg.dx = 10/ 3600.  # desired resolution of fgmax grid
-    # fg.dx = 5/ 3600.  # desired resolution of fgmax grid
-    fg.min_level_check = amrdata.amr_levels_max # which levels to monitor max on
-    fg.tstart_max = -days2seconds(1)  # just before wave arrives
-    fg.tend_max = days2seconds(1)    # when to stop monitoring max values
-    fg.dt_check = 60.      # how often to update max values
-    fg.interp_method = 0   # 0 ==> pw const in cells, recommended
-    fgmax_grids.append(fg)  # written to fgmax_grids.data
+        fg = fgmax_tools.FGmaxGrid()
+        fg.point_style = 2  # uniform rectangular x-y grid  
+        fg.x1 = fr['x1']
+        fg.x2 = fr['x2']
+        fg.y1 = fr['y1']
+        fg.y2 = fr['y2']
+        # desired resolution of fgmax grid
+        if 'dx' in fr.keys():
+            fg.dx = fr['dx']
+        else:
+            fg.dx = 5 / 3600.  
+            # fg.dx = 10 / 3600.  
+        fg.min_level_check = amrdata.amr_levels_max # which levels to monitor max on
+        fg.tstart_max = clawdata.t0  # just before wave arrives
+        fg.tend_max = clawdata.tfinal    # when to stop monitoring max values
+        fg.dt_check = 60.      # how often to update max values
+        fg.interp_method = 0   # 0 ==> pw const in cells, recommended
+        fgmax_grids.append(fg)  # written to fgmax_grids.data
     # ------------------------------------------------------------------
     # GeoClaw specific parameters:
     # ------------------------------------------------------------------
@@ -443,7 +517,7 @@ def setgeo(rundata):
 
     # == Algorithm and Initial Conditions ==
     # Due to seasonal swelling of gulf we set sea level higher
-    geo_data.sea_level = 0.0
+    geo_data.sea_level = 0
     geo_data.dry_tolerance = 1.e-2
 
     # Refinement Criteria
@@ -457,15 +531,80 @@ def setgeo(rundata):
     # == settopo.data values ==
     topo_data = rundata.topo_data
     topo_data.topofiles = []
+    topo_data.topo_missing = -32768
     # for topography, append lines of the form
     #   [topotype, minlevel, maxlevel, t1, t2, fname]
     # See regions for control over these regions, need better bathy data for
     # the smaller domains
 
-    topo_path = os.path.join(scratch_dir, 'topo_caribbean.asc')
+    # Entire domain
+    minlon = rundata.clawdata.lower[0]
+    maxlon = rundata.clawdata.upper[0]
+    minlat = rundata.clawdata.lower[1]
+    maxlat = rundata.clawdata.upper[1]
+    # ERDDAP Data Access Form call
+    # ETOPO - 1 arcminute resolution
+    topo_filename = f'etopo180.esriAscii?altitude[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
+    topo_url = 'http://coastwatch.pfeg.noaa.gov/erddap/griddap/' + topo_filename
+    clawutil.data.get_remote_file(topo_url)
+    topo_path = os.path.join(scratch_dir, topo_filename)
     topo_data.topofiles.append([3, 1, 5, rundata.clawdata.t0,
                                 rundata.clawdata.tfinal,
                                 topo_path])
+    # Caribbean region
+    # minlat = 9
+    # maxlat = 28
+    # minlon = -86
+    # maxlon = -58
+    # Break up into two regions
+
+    # Caribbean region (NW)
+    minlat = 16
+    maxlat = 28
+    minlon = -86
+    maxlon = -68
+    # ERDDAP Data Access Form call
+    # SRTM15 - 15 arcsecond resolution
+    # topo_filename = f'srtm15plus.esriAscii?z[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
+    # GEBCO_2020 Grid - 15 arcsecond resolution
+    topo_filename = f'GEBCO_2020.esriAscii?elevation[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
+    topo_url = 'http://coastwatch.pfeg.noaa.gov/erddap/griddap/' + topo_filename 
+    clawutil.data.get_remote_file(topo_url)
+    topo_path = os.path.join(scratch_dir, topo_filename)
+    topo_data.topofiles.append([3, 1, rundata.amrdata.amr_levels_max,
+                                rundata.clawdata.t0, rundata.clawdata.tfinal,
+                                topo_path])
+    # Caribbean region (SE)
+    minlat = 9
+    maxlat = 21
+    minlon = -69
+    maxlon = -58
+    # ERDDAP Data Access Form call
+    # SRTM15 - 15 arcsecond resolution
+    # topo_filename = f'srtm15plus.esriAscii?z[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
+    # GEBCO_2020 Grid - 15 arcsecond resolution
+    topo_filename = f'GEBCO_2020.esriAscii?elevation[({minlat}):1:({maxlat})][({minlon}):1:({maxlon})]'
+    topo_url = 'http://coastwatch.pfeg.noaa.gov/erddap/griddap/' + topo_filename 
+    clawutil.data.get_remote_file(topo_url)
+    topo_path = os.path.join(scratch_dir, topo_filename)
+    topo_data.topofiles.append([3, 1, rundata.amrdata.amr_levels_max, 
+                                rundata.clawdata.t0, rundata.clawdata.tfinal,
+                                topo_path])
+    # Virgin Islands High resolution 
+    # # High resolution (1 arcsec / 30m) Virgin Islands topo-bathy (roughly 2^-11 deg)
+    # VI_highres_filename = 'usvi_1_mhw_2014.nc'
+    # VI_highres_url = 'https://www.ngdc.noaa.gov/thredds/ncss/regional/' + VI_highres_filename
+    # clawutil.data.get_remote_file(VI_highres_url)
+    # # Note: for faster performance, crop this file to 17.5N to 18.5N x -65.1W to -64.3W
+    # # gdal_translate -projwin -65.1 18.5 -64.3 17.5 usvi_1_mhw_2014.nc usvi_1_mhw_2014_crop.nc
+    # # Note 2: for even faster performance, subsample to 60m resolution:
+    # # gdalwarp -tr 0.00056 0.00056 -r cubic usvi_1_mhw_2014_crop.nc usvi_1_mhw_2014_crop_subsample.nc
+    # # Then update the filename:
+    # # VI_highres_filename = 'usvi_1_mhw_2014_crop_subsample.nc'
+    # topo_path = os.path.join(scratch_dir, VI_highres_filename)
+    # topo_data.topofiles.append([4, 1, 7, rundata.clawdata.t0,
+                                # rundata.clawdata.tfinal,
+                                # topo_path])
 
     # == setfixedgrids.data values ==
     rundata.fixed_grid_data.fixedgrids = []
@@ -489,10 +628,15 @@ def setgeo(rundata):
     data.wind_refine = [20.0, 40.0, 60.0]
     data.R_refine = [60e3, 40e3, 20e3]
 
+    # Storm parameters - Parameterized storm (Holland 1980)
+    data.storm_specification_type = 'holland80'  # (type 1)
+    data.storm_file = os.path.expandvars(os.path.join(os.getcwd(),
+                                         'tomas.storm'))
+
     # Convert ATCF data to GeoClaw format
     clawutil.data.get_remote_file(
-                   "http://ftp.nhc.noaa.gov/atcf/archive/2017/bal112017.dat.gz")
-    atcf_path = os.path.join(scratch_dir, "bal112017.dat")
+                   "http://ftp.nhc.noaa.gov/atcf/archive/2010/bal212010.dat.gz")
+    atcf_path = os.path.join(scratch_dir, "bal212010.dat")
     # Note that the get_remote_file function does not support gzip files which
     # are not also tar files.  The following code handles this
     with gzip.open(".".join((atcf_path, 'gz')), 'rb') as atcf_file,    \
@@ -502,13 +646,12 @@ def setgeo(rundata):
     storm = Storm(path=atcf_path, file_format="ATCF")
 
     # Calculate landfall time - Need to specify as the file above does not
-    #storm.time_offset = datetime.datetime(YYYY, MM, DD, HH in UTC)
-    storm.time_offset = datetime.datetime(2003, 9, 15, 7)
-
-    # Storm parameters - Parameterized storm (Holland 1980)
-    data.storm_specification_type = 'holland80'  # (type 1)
-    data.storm_file = os.path.expandvars(os.path.join(os.getcwd(),
-                                         'isabel.storm'))
+    #ike.time_offset = datetime.datetime(YYYY, MM, DD, HH in UTC)
+    # "Landfall" for Irma at Virgin Islands was Sept 6, at ~ 18:00 UTC (2pm EST)
+    # storm.time_offset = datetime.datetime(1979, 9, 6, 18)
+    # Tomas developed from a tropical wave east of the Windward Islands on October 29
+    # Data starts at 2010-10-29-06
+    storm.time_offset = datetime.datetime(2010, 10, 30, 6)
 
     storm.write(data.storm_file, file_format='geoclaw')
 

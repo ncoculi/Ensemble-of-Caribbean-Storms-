@@ -32,7 +32,7 @@ def setplot(plotdata=None):
 
     # clear any old figures,axes,items data
     plotdata.clearfigures()
-    plotdata.format = 'ascii'
+    plotdata.format = 'binary'
 
     # Load data from output
     clawdata = clawutil.ClawInputData(2)
@@ -53,7 +53,11 @@ def setplot(plotdata=None):
                                              kwargs={"markersize": 4})
 
     # Color limits
-    surface_limits = [-5.0, 5.0]
+    surface_range = 5.0
+    eta = physics.sea_level
+    if not isinstance(eta,list):
+        eta = [eta]
+    surface_limits = [eta[0]-surface_range,eta[0]+surface_range]
     speed_limits = [0.0, 3.0]
     wind_limits = [0, 64]
     pressure_limits = [935, 1013]
@@ -65,19 +69,12 @@ def setplot(plotdata=None):
     # ==========================================================================
     #   Plot specifications
     # ==========================================================================
-    regions = {"Caribbean": {"xlimits": (clawdata.lower[0], clawdata.upper[0]),
+    regions = {"Entire Region": {"xlimits": (clawdata.lower[0], clawdata.upper[0]),
                         "ylimits": (clawdata.lower[1], clawdata.upper[1]),
                         "figsize": (13, 10)},
-               "Antigua": {"xlimits": (62.15, -61.7833),  
-                        "ylimits": (17.25, 17.75),
+               "Caribbean Sub-region": {"xlimits": (-86, -58.0),
+                        "ylimits": (9, 28),
                         "figsize": (16, 6)},
-               "Puerto Rico": {"xlimits": (-67.5, -66.5),
-                        "ylimits": (19.26, 18.75),
-                        "figsize": (16, 6)},
-              "Turks and Caicos": {"xlimits": (-73.15, -72.92),
-                        "ylimits": (22.25, 21.25),
-                        "figsize": (16, 6)},
-             
                }
 
     for (name, region_dict) in regions.items():
@@ -113,11 +110,11 @@ def setplot(plotdata=None):
     # Friction field
     #
     plotfigure = plotdata.new_plotfigure(name='Friction')
-    plotfigure.show = friction_data.variable_friction and True
+    plotfigure.show = friction_data.variable_friction and False
 
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = regions['Caribbean']['xlimits']
-    plotaxes.ylimits = regions['Caribbean']['ylimits']
+    plotaxes.xlimits = regions['Entire Region']['xlimits']
+    plotaxes.ylimits = regions['Entire Region']['ylimits']
     # plotaxes.title = "Manning's N Coefficient"
     plotaxes.afteraxes = friction_after_axes
     plotaxes.scaled = True
@@ -131,11 +128,11 @@ def setplot(plotdata=None):
     #
     # Pressure field
     plotfigure = plotdata.new_plotfigure(name='Pressure')
-    plotfigure.show = surge_data.pressure_forcing and True
+    plotfigure.show = surge_data.pressure_forcing and False
 
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = regions['Caribbean']['xlimits']
-    plotaxes.ylimits = regions['Caribbean']['ylimits']
+    plotaxes.xlimits = regions['Entire Region']['xlimits']
+    plotaxes.ylimits = regions['Entire Region']['ylimits']
     plotaxes.title = "Pressure Field"
     plotaxes.afteraxes = surge_afteraxes
     plotaxes.scaled = True
@@ -144,11 +141,11 @@ def setplot(plotdata=None):
 
     # Wind field
     plotfigure = plotdata.new_plotfigure(name='Wind Speed')
-    plotfigure.show = surge_data.wind_forcing and True
+    plotfigure.show = surge_data.wind_forcing and False
 
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = regions['Caribbean']['xlimits']
-    plotaxes.ylimits = regions['Caribbean']['ylimits']
+    plotaxes.xlimits = regions['Entire Region']['xlimits']
+    plotaxes.ylimits = regions['Entire Region']['ylimits']
     plotaxes.title = "Wind Field"
     plotaxes.afteraxes = surge_afteraxes
     plotaxes.scaled = True
@@ -225,27 +222,32 @@ def setplot(plotdata=None):
     os.system('mkdir -p %s' % fgmax_plotdir)
     # Read fgmax data:
     fgno = 1
-    fg = fgmax_tools.FGmaxGrid()
-    fg.read_fgmax_grids_data(fgno)
+    while(True):
+        fg = fgmax_tools.FGmaxGrid()
+        try:
+            fg.read_fgmax_grids_data(fgno)
 
-    fg.read_output(outdir=plotdata.outdir)
+            fg.read_output(outdir=plotdata.outdir)
 
-    fg.B0 = fg.B  # no seafloor deformation in this problem
-    fg.h_onshore = np.ma.masked_where(fg.B0 < 0., fg.h)
-    plt.figure(figsize=(20,20))
+            fg.B0 = fg.B  # no seafloor deformation in this problem
+            fg.h_onshore = np.ma.masked_where(fg.B0 < 0., fg.h)
+            plt.figure(figsize=(20,20))
 
-    pc = plt.pcolormesh(fg.X, fg.Y, fg.h_onshore, cmap='hot_r')
-    cb = plt.colorbar(pc, extend='max', shrink=0.7)
-    cb.set_label('meters')
-    plt.contour(fg.X, fg.Y, fg.B, [0], colors='g')
+            pc = plt.pcolormesh(fg.X, fg.Y, fg.h_onshore, cmap='hot_r')
+            cb = plt.colorbar(pc, extend='max', shrink=0.7)
+            cb.set_label('meters')
+            plt.contour(fg.X, fg.Y, fg.B, [0], colors='g')
 
-    plt.gca().set_aspect(1./np.cos(48*np.pi/180.))
-    plt.ticklabel_format(useOffset=False)
-    plt.xticks(rotation=20)
-    plt.title('Maximum Onshore flow depth\nfgmax grid %s' % (fgno))
-    img_name = 'fgmax%s_h_onshore.png' % str(fgno).zfill(4) 
-    plt.savefig(fname='%s/%s' % (fgmax_plotdir, img_name))
-    otherfigure = plotdata.new_otherfigure(name='max depth on fgmax grid 1', fname=img_name)
+            plt.gca().set_aspect(1./np.cos(48*np.pi/180.))
+            plt.ticklabel_format(useOffset=False)
+            plt.xticks(rotation=20)
+            plt.title('Maximum Onshore flow depth\nfgmax grid {fgno}')
+            img_name = f'fgmax{str(fgno).zfill(4)}_h_onshore.png'
+            plt.savefig(fname=f'{fgmax_plotdir}/{img_name}')
+            otherfigure = plotdata.new_otherfigure(name=f'max depth on fgmax grid {fgno}', fname=img_name)
+            fgno = fgno + 1
+        except:
+            break
 
     # -----------------------------------------
     # Parameters used only when creating html and/or latex hardcopy
@@ -254,10 +256,10 @@ def setplot(plotdata=None):
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
     plotdata.print_framenos = 'all'          # list of frames to print
-    plotdata.print_gaugenos = [1, 2, 3, 4]   # list of gauges to print
+    plotdata.print_gaugenos = 'all'          # list of gauges to print
     plotdata.print_fignos = 'all'            # list of figures to print
     plotdata.html = True                     # create html files of plots?
-    plotdata.latex = True                    # create latex file of plots?
+    plotdata.latex = False                    # create latex file of plots?
     plotdata.latex_figsperline = 2           # layout of plots
     plotdata.latex_framesperline = 1         # layout of plots
     plotdata.latex_makepdf = False           # also run pdflatex?

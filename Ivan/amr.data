@@ -6,9 +6,9 @@
 
 60                   =: max1d               
 4                    =: amr_levels_max      
-2 2 2 2 4 8          =: refinement_ratios_x 
-2 2 2 2 4 8          =: refinement_ratios_y 
-2 2 2 2 4 8          =: refinement_ratios_t 
+2 2 2 2 4 2          =: refinement_ratios_x 
+2 2 2 2 4 2          =: refinement_ratios_y 
+2 2 2 2 4 2          =: refinement_ratios_t 
 
 'center' 'capacity' 'yleft' 'center' 'center' 'center' 'center' =: aux_type            
 
