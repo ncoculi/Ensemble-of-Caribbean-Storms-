@@ -75,7 +75,7 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.upper[1] = 31.0      # north latitude
 
     # Number of grid cells:
-    degree_factor = 4  # (0.25¬∫,0.25¬∫) ~ (25237.5 m, 27693.2 m) resolution
+    degree_factor = 4  # (0.25 deg,0.25 deg) ~ (25237.5 m, 27693.2 m) resolution
     clawdata.num_cells[0] = int(clawdata.upper[0] - clawdata.lower[0]) \
         * degree_factor
     clawdata.num_cells[1] = int(clawdata.upper[1] - clawdata.lower[1]) \
@@ -344,7 +344,7 @@ def setrun(claw_pkg='geoclaw'):
     gauges.append([6, -61.3891833, 15.31385,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
-    # Pointe è´¢ Pitre, Guadeloupe, 7, -61.531452, 16.224398
+    # Pointe a Pitre, Guadeloupe, 7, -61.531452, 16.224398
     gauges.append([7, -61.531452, 16.224398,
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
@@ -475,8 +475,8 @@ def setrun(claw_pkg='geoclaw'):
         if 'dx' in fr.keys():
             fg.dx = fr['dx']
         else:
-            fg.dx = 5 / 3600.  
-            # fg.dx = 10 / 3600.  
+            # fg.dx = 5 / 3600.  
+            fg.dx = 10 / 3600.  
         fg.min_level_check = amrdata.amr_levels_max # which levels to monitor max on
         fg.tstart_max = clawdata.t0  # just before wave arrives
         fg.tend_max = clawdata.tfinal    # when to stop monitoring max values
