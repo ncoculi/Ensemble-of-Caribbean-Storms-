@@ -5,7 +5,7 @@
 ########################################################
 
 60                   =: max1d               
-4                    =: amr_levels_max      
+5                    =: amr_levels_max      
 2 2 2 2 4 2          =: refinement_ratios_x 
 2 2 2 2 4 2          =: refinement_ratios_y 
 2 2 2 2 4 2          =: refinement_ratios_t 
