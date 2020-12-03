@@ -141,7 +141,7 @@ def setplot(plotdata=None):
 
     # Wind field
     plotfigure = plotdata.new_plotfigure(name='Wind Speed')
-    plotfigure.show = surge_data.wind_forcing and False
+    plotfigure.show = surge_data.wind_forcing and True
 
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.xlimits = regions['Entire Region']['xlimits']
