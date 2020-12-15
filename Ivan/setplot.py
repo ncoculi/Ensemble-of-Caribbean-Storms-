@@ -90,8 +90,8 @@ def setplot(plotdata=None):
 
         surgeplot.add_surface_elevation(plotaxes, bounds=surface_limits)
         surgeplot.add_land(plotaxes)
-        plotaxes.plotitem_dict['surface'].amr_patchedges_show = [0] * 10
-        plotaxes.plotitem_dict['land'].amr_patchedges_show = [0] * 10
+        plotaxes.plotitem_dict['surface'].amr_patchedges_show = [1] * 10
+        plotaxes.plotitem_dict['land'].amr_patchedges_show = [1] * 10
 
         # Speed Figure
         plotfigure = plotdata.new_plotfigure(name="Currents - %s" % name)

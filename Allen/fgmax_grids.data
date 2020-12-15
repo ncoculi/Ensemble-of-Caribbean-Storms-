@@ -12,7 +12,7 @@
 -1.7280000000e+05            # tstart_max
 3.4560000000e+05            # tend_max
 6.0000000000e+01            # dt_check
-4                           # min_level_check
+7                           # min_level_check
 1.0000000000e-02            # arrival_tol
 0                           # interp_method
 2                           # point_style
@@ -24,7 +24,7 @@
 -1.7280000000e+05            # tstart_max
 3.4560000000e+05            # tend_max
 6.0000000000e+01            # dt_check
-4                           # min_level_check
+7                           # min_level_check
 1.0000000000e-02            # arrival_tol
 0                           # interp_method
 2                           # point_style
@@ -36,7 +36,7 @@
 -1.7280000000e+05            # tstart_max
 3.4560000000e+05            # tend_max
 6.0000000000e+01            # dt_check
-4                           # min_level_check
+7                           # min_level_check
 1.0000000000e-02            # arrival_tol
 0                           # interp_method
 2                           # point_style
@@ -48,7 +48,7 @@
 -1.7280000000e+05            # tstart_max
 3.4560000000e+05            # tend_max
 6.0000000000e+01            # dt_check
-4                           # min_level_check
+7                           # min_level_check
 1.0000000000e-02            # arrival_tol
 0                           # interp_method
 2                           # point_style
@@ -60,7 +60,7 @@
 -1.7280000000e+05            # tstart_max
 3.4560000000e+05            # tend_max
 6.0000000000e+01            # dt_check
-4                           # min_level_check
+7                           # min_level_check
 1.0000000000e-02            # arrival_tol
 0                           # interp_method
 2                           # point_style
