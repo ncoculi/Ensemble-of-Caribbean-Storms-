@@ -176,7 +176,7 @@ def generate_rundata(t0, tfinal, claw_pkg='geoclaw'):
     # ------------------
 
     # Order of accuracy:  1 => Godunov,  2 => Lax-Wendroff plus limiters
-    clawdata.order = 1
+    clawdata.order = 2
 
     # Use dimensional splitting? (not yet available for AMR)
     clawdata.dimensional_split = 'unsplit'
@@ -185,7 +185,7 @@ def generate_rundata(t0, tfinal, claw_pkg='geoclaw'):
     #  0 or 'none'      ==> donor cell (only normal solver used)
     #  1 or 'increment' ==> corner transport of waves
     #  2 or 'all'       ==> corner transport of 2nd order corrections too
-    clawdata.transverse_waves = 1
+    clawdata.transverse_waves = 2
 
     # Number of waves in the Riemann solution:
     clawdata.num_waves = 3
@@ -373,7 +373,7 @@ def generate_rundata(t0, tfinal, claw_pkg='geoclaw'):
                                      rundata.clawdata.t0,
                                      rundata.clawdata.tfinal])
     # Force the gauges to also record the wind and pressure fields
-    aux_out_fields = [4, 5, 6]
+    rundata.gaugedata.aux_out_fields = [4, 5, 6]
 
     # == setregions.data values ==
     regions = rundata.regiondata.regions
