@@ -258,12 +258,16 @@ def generate_rundata(t0, tfinal, claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 7
+    amrdata.amr_levels_max = 5
+    # amrdata.amr_levels_max = 7
 
     # List of refinement ratios at each level (length at least mxnest-1)
     amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 2] # 200 m
     amrdata.refinement_ratios_y = [2, 2, 2, 2, 4, 2]
     amrdata.refinement_ratios_t = [2, 2, 2, 2, 4, 2]
+    # amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 4] # 100 m
+    # amrdata.refinement_ratios_y = [2, 2, 2, 2, 4, 4]
+    # amrdata.refinement_ratios_t = [2, 2, 2, 2, 4, 4]
     # amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 8] # 50 m
     # amrdata.refinement_ratios_y = [2, 2, 2, 2, 4, 8]
     # amrdata.refinement_ratios_t = [2, 2, 2, 2, 4, 8]
