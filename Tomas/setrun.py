@@ -72,7 +72,7 @@ def setrun(claw_pkg='geoclaw'):
     # in days relative to landfall:
     # -------------
     t0 = -days2seconds(1) 
-    tfinal = days2seconds(8)
+    tfinal = days2seconds(7)
     
     # ========
     

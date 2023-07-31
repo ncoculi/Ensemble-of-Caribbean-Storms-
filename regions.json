@@ -1,0 +1,58 @@
+[
+    {
+        "Name": "Trinidad to Dominica; Winward Islands",
+        "x1": -62.6056,
+        "x2": -58.7494,
+        "y1": 9.9042,
+        "y2": 15.694
+    },
+    {
+        "Name": "Guadeloupe to U.S. Virgin Islands; Leeward Islands",
+        "x1": -65.6021,
+        "x2": -60.6143,
+        "y1": 15.7242,
+        "y2": 18.8608
+    },
+    {
+        "Name": "Virgin Islands, Puerto Rico and Hispaniola",
+        "x1": -75.1355,
+        "x2": -63.8306,
+        "y1": 16.7706,
+        "y2": 20.9674
+    },
+    {
+        "Name": "Cuba, Jamaica, and the Cayman Islands",
+        "x1": -85.3088,
+        "x2": -73.9709,
+        "y1": 17.6605,
+        "y2": 23.3514
+    },
+    {
+        "Name": "Turks and Caicos",
+        "x1": -73.9819,
+        "x2": -70.9058,
+        "y1": 20.8603,
+        "y2": 22.0853,
+        "dx": 0.001389,
+        "dx_comment": "5/3600 = 0.001389"
+        },
+    {
+        "Name": "Dominica",
+        "x1": -61.6594,
+        "x2": -61.1307,
+        "y1": 15.1234,
+        "y2": 15.6933,
+        "dx": 0.001389,
+        "dx_comment": "5/3600 = 0.001389"
+    },
+    {
+        "Name": "Antigua and Barbuda",
+        "x1": -62.1744,
+        "x2": -61.4822,
+        "y1": 16.9093,
+        "y2": 17.8075,
+        "dx": 0.001389,
+        "dx_comment": "5/3600 = 0.001389"
+    }
+]
+

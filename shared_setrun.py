@@ -258,13 +258,13 @@ def generate_rundata(t0, tfinal, claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 5
+    amrdata.amr_levels_max = 6
     # amrdata.amr_levels_max = 7
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 2] # 200 m
-    amrdata.refinement_ratios_y = [2, 2, 2, 2, 4, 2]
-    amrdata.refinement_ratios_t = [2, 2, 2, 2, 4, 2]
+    amrdata.refinement_ratios_x = [2, 2, 2, 2, 2, 4] # 200 m
+    amrdata.refinement_ratios_y = [2, 2, 2, 2, 2, 4]
+    amrdata.refinement_ratios_t = [2, 2, 2, 2, 2, 4]
     # amrdata.refinement_ratios_x = [2, 2, 2, 2, 4, 4] # 100 m
     # amrdata.refinement_ratios_y = [2, 2, 2, 2, 4, 4]
     # amrdata.refinement_ratios_t = [2, 2, 2, 2, 4, 4]
@@ -314,6 +314,26 @@ def generate_rundata(t0, tfinal, claw_pkg='geoclaw'):
     amrdata.uprint = False      # update/upbnd reporting
 
     # More AMR parameters can be set -- see the defaults in pyclaw/data.py
+
+    # == setregions.data values ==
+    regions = rundata.regiondata.regions
+    # to specify regions of refinement append lines of the form
+    #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
+    # Entire region
+    regions.append([1,5,
+                    rundata.clawdata.t0,rundata.clawdata.tfinal,
+                    rundata.clawdata.lower[0], rundata.clawdata.upper[0],
+                    rundata.clawdata.lower[1], rundata.clawdata.upper[1]])
+
+    # Caribbean region (NW)
+    regions.append([1,rundata.amrdata.amr_levels_max,
+                    rundata.clawdata.t0,rundata.clawdata.tfinal,
+                    16,28,-86,-68])
+
+    # Caribbean region (SE)
+    regions.append([1,rundata.amrdata.amr_levels_max,
+                    rundata.clawdata.t0,rundata.clawdata.tfinal,
+                    9,21,-69,-58])
 
     # == Gauges == *
     gauges = rundata.gaugedata.gauges
@@ -379,10 +399,6 @@ def generate_rundata(t0, tfinal, claw_pkg='geoclaw'):
     # Force the gauges to also record the wind and pressure fields
     rundata.gaugedata.aux_out_fields = [4, 5, 6]
 
-    # == setregions.data values ==
-    regions = rundata.regiondata.regions
-    # to specify regions of refinement append lines of the form
-    #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
     # Add gauge support
     dx = 1/3600
     for g in gauges:
@@ -410,59 +426,14 @@ def generate_rundata(t0, tfinal, claw_pkg='geoclaw'):
     # specifying any fgmax grids.
     # Note: 1 arcsec = 30 m
     # Make sure x1 < x2, y1 < y2
-    fgmax_regions = [
-            {'Name':'Trinidad to Dominica; Winward Islands',
-                'x1': -62.6056,
-                'x2': -58.7494,
-                'y1': 9.9042,
-                'y2': 15.694,
-                },
-            {'Name':'Guadeloupe to U.S. Virgin Islands; Leeward Islands',
-                'x1': -65.6021,
-                'x2': -60.6143,
-                'y1': 15.7242,
-                'y2': 18.8608,
-                },
-            {'Name':'Virgin Islands, Puerto Rico and Hispaniola',
-                'x1': -75.1355,
-                'x2': -63.8306,
-                'y1': 16.7706,
-                'y2': 20.9674,
-                },
-            {'Name':'Cuba, Jamaica, and the Cayman Islands',
-                'x1': -85.3088,
-                'x2': -73.9709,
-                'y1': 17.6605,
-                'y2': 23.3514,
-                },
-            {'Name':'The Bahamas and The Turks and Caicos Islands',
-                'x1': -79.3542,
-                'x2': -70.1697,
-                'y1': 20.1819,
-                'y2': 27.5647,
-                },
-            # {'Name':'Turks and Caicos',
-                # 'x1': -73.9819,
-                # 'x2': -70.9058,
-                # 'y1': 20.8603,
-                # 'y2': 22.0853,
-                # 'dx': 5/3600
-                # },
-            # {'Name':'Dominica',
-                # 'x1': -61.6594,
-                # 'x2': -61.1307,
-                # 'y1': 15.1234,
-                # 'y2': 15.6933,
-                # 'dx': 1/3600
-                # },
-            # {'Name':'Antigua and Barbuda',
-                # 'x1': -62.1744,
-                # 'x2': -61.4822,
-                # 'y1': 16.9093,
-                # 'y2': 17.8075,
-                # 'dx': 1/3600
-                # },
-            ]
+    # Copy regions file for future 'make plots'
+    regions_file = 'regions.json'
+    regions_file_output = f'_output/{regions_file}'
+    os.system(f'cp ../{regions_file} {regions_file_output}')
+    import json
+    with open(regions_file_output,"r") as file:
+        fgmax_regions = json.load(file)
+
     for fr in fgmax_regions:
     # Points on a uniform 2d grid:
         fg = fgmax_tools.FGmaxGrid()
@@ -475,9 +446,9 @@ def generate_rundata(t0, tfinal, claw_pkg='geoclaw'):
         if 'dx' in fr.keys():
             fg.dx = fr['dx']
         else:
-            fg.dx = 5 / 3600.  
-            # fg.dx = 10 / 3600.  
-        fg.min_level_check = amrdata.amr_levels_max # which levels to monitor max on
+            # fg.dx = 5 / 3600.  
+            fg.dx = 10 / 3600.  
+        fg.min_level_check = 3 # which levels to monitor max on
         fg.tstart_max = clawdata.t0  # just before wave arrives
         fg.tend_max = clawdata.tfinal    # when to stop monitoring max values
         fg.dt_check = 60.      # how often to update max values
@@ -529,7 +500,7 @@ def generate_geo_data(rundata):
     topo_data.topofiles = []
     topo_data.topo_missing = -32768
     # for topography, append lines of the form
-    #   [topotype, minlevel, maxlevel, t1, t2, fname]
+    #   [topotype, fname]
     # See regions for control over these regions, need better bathy data for
     # the smaller domains
 
@@ -544,9 +515,7 @@ def generate_geo_data(rundata):
     topo_url = 'http://coastwatch.pfeg.noaa.gov/erddap/griddap/' + topo_filename
     clawutil.data.get_remote_file(topo_url)
     topo_path = os.path.join(scratch_dir, topo_filename)
-    topo_data.topofiles.append([3, 1, 5, rundata.clawdata.t0,
-                                rundata.clawdata.tfinal,
-                                topo_path])
+    topo_data.topofiles.append([3, topo_path])
     # Caribbean region
     # minlat = 9
     # maxlat = 28
@@ -567,9 +536,7 @@ def generate_geo_data(rundata):
     topo_url = 'http://coastwatch.pfeg.noaa.gov/erddap/griddap/' + topo_filename 
     clawutil.data.get_remote_file(topo_url)
     topo_path = os.path.join(scratch_dir, topo_filename)
-    topo_data.topofiles.append([3, 1, rundata.amrdata.amr_levels_max,
-                                rundata.clawdata.t0, rundata.clawdata.tfinal,
-                                topo_path])
+    topo_data.topofiles.append([3, topo_path])
     # Caribbean region (SE)
     minlat = 9
     maxlat = 21
@@ -583,9 +550,7 @@ def generate_geo_data(rundata):
     topo_url = 'http://coastwatch.pfeg.noaa.gov/erddap/griddap/' + topo_filename 
     clawutil.data.get_remote_file(topo_url)
     topo_path = os.path.join(scratch_dir, topo_filename)
-    topo_data.topofiles.append([3, 1, rundata.amrdata.amr_levels_max, 
-                                rundata.clawdata.t0, rundata.clawdata.tfinal,
-                                topo_path])
+    topo_data.topofiles.append([3, topo_path])
     # Virgin Islands High resolution 
     # # High resolution (1 arcsec / 30m) Virgin Islands topo-bathy (roughly 2^-11 deg)
     # VI_highres_filename = 'usvi_1_mhw_2014.nc'
@@ -598,15 +563,13 @@ def generate_geo_data(rundata):
     # # Then update the filename:
     # # VI_highres_filename = 'usvi_1_mhw_2014_crop_subsample.nc'
     # topo_path = os.path.join(scratch_dir, VI_highres_filename)
-    # topo_data.topofiles.append([4, 1, 7, rundata.clawdata.t0,
-                                # rundata.clawdata.tfinal,
-                                # topo_path])
+    # topo_data.topofiles.append([4, topo_path])
 
-    # == setfixedgrids.data values ==
-    rundata.fixed_grid_data.fixedgrids = []
-    # for fixed grids append lines of the form
-    # [t1,t2,noutput,x1,x2,y1,y2,xpoints,ypoints,\
-    #  ioutarrivaltimes,ioutsurfacemax]
+    # == fgout grids ==
+    # new style as of v5.9.0 (old rundata.fixed_grid_data is deprecated)
+    # set rundata.fgout_data.fgout_grids to be a 
+    # list of objects of class clawpack.geoclaw.fgout_tools.FGoutGrid:
+    #rundata.fgout_data.fgout_grids = []
 
     # ================
     #  Set Surge Data
